@@ -1,0 +1,44 @@
+services:
+  sftp-basic:
+    container_name: sftp-basic
+    hostname: sftp-basic
+    image: atmoz/sftp
+    ports:
+      - "2222:22"
+    command: foo:password:::upload1,upload2
+  
+  sftp-basic-exporter:
+    container_name: sftp-basic-exporter
+    image: arunvelsriram/sftp-exporter
+    ports:
+      - "8081:8080"
+    environment:
+      BIND_ADDRESS: 0.0.0.0
+      LOG_LEVEL: debug
+      SFTP_HOST: sftp-basic
+      SFTP_PORT: 22
+      SFTP_USER: foo
+      SFTP_PASSWORD: password
+      SFTP_PATHS: "/upload1 /upload2"
+
+  prometheus:
+    container_name: prometheus
+    hostname: prometheus
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+
+  grafana:
+    container_name: grafana
+    hostname: grafana
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./grafana/provisioning:/etc/grafana/provisioning"
+      - "./grafana/dashboards/12828_rev2.json:/var/lib/grafana/dashboards/12828_rev2.json"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
