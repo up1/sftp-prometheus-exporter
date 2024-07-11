@@ -27,7 +27,7 @@ Access to url => http://localhost:8081/metrics
 $docker compose up -d prometheus
 ```
 
-Access to url => http://localhost:9000
+Access to url => http://localhost:9090
 
 ## Start Grafana server
 ```
